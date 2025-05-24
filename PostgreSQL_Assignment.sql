@@ -13,7 +13,7 @@ CREATE TABLE rangers (
 INSERT INTO rangers(name,region) VALUES
 ('Alice Green','Northern Hills'),
 ('Bob White','River Delta'),
-('Carol King','Mountain Range')
+('Carol King','Mountain Range');
 
 -- creating species table inserting data 
 
@@ -23,7 +23,7 @@ CREATE TABLE species(
     scientific_name VARCHAR(100) NOT NULL,
     discovery_date DATE NOT NULL,
     conservation_status VARCHAR(30) NOT NULL
-)
+);
 
 INSERT INTO species (common_name, scientific_name, discovery_date, conservation_status) VALUES
 ('Snow Leopard', 'Panthera uncia', '1775-01-01', 'Endangered'),
@@ -86,3 +86,49 @@ JOIN sightings USING(species_id)
 JOIN rangers USING(ranger_id)
 ORDER BY sighting_time DESC
 LIMIT 2; 
+
+
+-- problem-7 : Update all species discovered before year 1800 to have status 'Historic'.
+
+UPDATE species
+SET conservation_status = 'Historic'
+WHERE extract(year from discovery_date) < 1800;
+
+
+-- problem-8 : Label each sighting's time of day as 'Morning', 'Afternoon', or 'Evening'.
+
+-- CREATE OR REPLACE FUNCTION time_labeling(sighting_time TIMESTAMP)
+-- RETURNS TEXT
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--   sighting_hour INT = extract(HOUR FROM sighting_time);
+-- BEGIN
+--   IF sighting_hour < 12 THEN
+--     RETURN 'Morning';
+--   ELSIF sighting_hour BETWEEN 12 AND 16 THEN
+--     RETURN 'Afternoon';
+--   ELSE
+--     RETURN 'Evening';
+--   END IF;
+-- END;
+-- $$;
+
+
+-- SELECT sighting_id, time_labeling(sighting_time) AS time_of_day FROM sightings
+
+SELECT 
+  sighting_id,
+  CASE
+    WHEN extract(HOUR FROM sighting_time) < 12 THEN 'Morning'
+    WHEN extract(HOUR FROM sighting_time) BETWEEN 12 AND 16 THEN 'Afternoon'
+    ELSE 'Evening'
+  END AS time_of_day
+FROM sightings ORDER BY sighting_id;
+
+
+
+-- problem-9 Delete rangers who have never sighted any species
+
+DELETE FROM rangers
+WHERE ranger_id NOT IN (SELECT ranger_id from sightings)
