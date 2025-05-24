@@ -77,3 +77,12 @@ GROUP BY name ORDER BY name;
 SELECT common_name FROM species
 LEFT JOIN sightings ON sightings.species_id = species.species_id
 WHERE sighting_id IS NULL;
+
+
+-- problem-6 : Show the most recent 2 sightings.
+
+SELECT common_name, sighting_time, name FROM species
+JOIN sightings USING(species_id) 
+JOIN rangers USING(ranger_id)
+ORDER BY sighting_time DESC
+LIMIT 2; 
