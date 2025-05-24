@@ -70,3 +70,10 @@ SELECT * FROM sightings WHERE location ILIKE '%Pass%';
 SELECT name, count(*) AS total_sightings FROM sightings
 JOIN rangers USING(ranger_id)
 GROUP BY name ORDER BY name;
+
+
+-- problem-5 :  List species that have never been sighted.
+
+SELECT common_name FROM species
+LEFT JOIN sightings ON sightings.species_id = species.species_id
+WHERE sighting_id IS NULL;
