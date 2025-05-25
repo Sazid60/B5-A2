@@ -1,4 +1,4 @@
-## How can you calculate aggregate functions like `COUNT()`, `SUM()`, and `AVG()` in PostgreSQL?
+# 10. How can you calculate aggregate functions like `COUNT()`, `SUM()`, and `AVG()` in PostgreSQL?
 
 **ANS:**
 
@@ -61,7 +61,7 @@ GROUP BY department;
 
 এরপর কী হবে? SQL প্রতিটি বিভাগের জন্য সমস্ত বেতন যোগ করে এবং মোট বেতনকে কর্মচারীর সংখ্যা দিয়ে ভাগ করে "সাধারণ" বেতন গণনা করে।
 
-## 8. What is the significance of the `JOIN` operation, and how does it work in PostgreSQL?
+# 8. What is the significance of the `JOIN` operation, and how does it work in PostgreSQL?
 
 **ANS:**
 
@@ -79,15 +79,16 @@ GROUP BY department;
 | 6   | Sarah      | Connor     |
 
 - `অর্ডার টেবিল`
-  | id | user_id | number | total |
-  | -- | -------- | --------- |
-  | 1 | 2 | 01911.... | 32.00 |
-  | 2 | 3 | 01911.... | 75.99 |
-  | 3 | 1 | 01911.... | 24.99 |
-  | 4 | 1 | NULL | 118.25 |
-  | 5 | 5 | 01911.... | NULL |
-  | 6 | 999 | 01911.... | 40.00 |
-  | 7 | NULL | 01911.... | 60.00 |
+
+  | id  | user_id | number    | total  |
+  | --- | ------- | --------- | ------ |
+  | 1   | 2       | 01911.... | 32.00  |
+  | 2   | 3       | 01911.... | 75.99  |
+  | 3   | 1       | 01911.... | 24.99  |
+  | 4   | 1       | NULL      | 118.25 |
+  | 5   | 5       | 01911.... | NULL   |
+  | 6   | 999     | 01911.... | 40.00  |
+  | 7   | NULL    | 01911.... | 60.00  |
 
 অর্ডার টেবিলের ভেতরে ইউজার আইডিটা একটা ফরেন কি হিসেবে কাজ করতেছে সে ইউজার টেবিলের আইডি টা রেফার করতেছে। এখানে দেখা যায় অর্ডার টেবিল এর ভিতর যদি আমরা ইউজার এর ইনফরমেশন টা দেখতে চাই আমরা ইউজার ইনফরমেশন টা ডিরেক্টলি দেখতে পারিনা। এখানেই আসে `JOIN` এর কনসেপ্ট। আমরা দুইটা টেবিল কে জয়েন করে ইনফরমেশন একসাথে দেখতে পারি।
 
@@ -110,7 +111,7 @@ INNER JOIN  orders ON users.id = orders.user_id;
 | 3        | William    | Faulkner   | 2         | 3       | 01911.... | 75.99  |
 | 5        | John       | Steinbeck  | 5         | 5       | 01911.... | NULL   |
 
-### `LEFT JOIN` & `RIGHT JOIN` এর ব্যবহার
+#### `LEFT JOIN` & `RIGHT JOIN` এর ব্যবহার
 
 #### `RIGHT JOIN`
 
