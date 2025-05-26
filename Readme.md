@@ -256,11 +256,11 @@ LIMIT  = items per page
 
 11. সাবকোয়্যারি ব্যবহার করে কন্ডিশন চেক
 
-```SQL
-WHERE user_id IN (SELECT id FROM users WHERE is_active = 1)
-```
+    ```SQL
+    WHERE user_id IN (SELECT id FROM users WHERE is_active = 1)
+    ```
 
-- user_id এমন যেসব রো-এর id ইউজার টেবিলে আছে এবং যাদের is_active = 1, সেগুলো রিটার্ন করবে।
+    - user_id এমন যেসব রো-এর id ইউজার টেবিলে আছে এবং যাদের is_active = 1, সেগুলো রিটার্ন করবে।
 
 এসব কিছু উদাহরণ। এছাড়াও আমরা বিভিন্নভাবে একে ইউজ করতে পারি। সর্বোপরি বলা যায় where ক্লজের গুরুত্ব অপরিসীম।
 
