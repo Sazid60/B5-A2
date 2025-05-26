@@ -2,6 +2,9 @@
 
 -- ****SQL code for table creation, sample data insertion, and all queries.****
 
+-- Create a database 
+create database conservation_db
+
 -- creating rangers table and inserting data 
 
 CREATE TABLE rangers (
@@ -36,18 +39,19 @@ INSERT INTO species (common_name, scientific_name, discovery_date, conservation_
 
 CREATE TABLE sightings (
     sighting_id SERIAL PRIMARY KEY,
-    ranger_id INTEGER NOT NULL REFERENCES rangers(ranger_id),
-    species_id INTEGER NOT NULL REFERENCES species(species_id),
-    sighting_time TIMESTAMP NOT NULL,
+    species_id INTEGER NOT NULL REFERENCES species(species_id) ON DELETE RESTRICT,
+    ranger_id INTEGER NOT NULL REFERENCES rangers(ranger_id) ON DELETE RESTRICT,
     location VARCHAR(100) NOT NULL,
+    sighting_time TIMESTAMP NOT NULL,
     notes TEXT
 );
 
+
 INSERT INTO sightings (species_id, ranger_id, location, sighting_time, notes) VALUES
-(1, 1, 'Peak Ridge', '2024-05-10 07:45:00', 'Camera trap image captured'),
-(2, 2, 'Bankwood Area', '2024-05-12 16:20:00', 'Juvenile seen'),
-(3, 3, 'Bamboo Grove East', '2024-05-15 09:10:00', 'Feeding observed'),
-(1, 2, 'Snowfall Pass', '2024-05-18 18:30:00',NULL);
+(1, 1, 'Peak Ridge','2024-05-10 07:45:00', 'Camera trap image captured'),
+(2, 2, 'Bankwood Area','2024-05-12 16:20:00', 'Juvenile seen'),
+(3, 3, 'Bamboo Grove East','2024-05-15 09:10:00', 'Feeding observed'),
+(1, 2, 'Snowfall Pass','2024-05-18 18:30:00', NULL);
 
 
 -- ****__________________________SQL queries for all problems__________________________****
@@ -67,10 +71,13 @@ SELECT * FROM sightings WHERE location ILIKE '%Pass%';
 
 -- problem-4 : List each ranger's name and their total number of sightings.
 
+-- SELECT name, count(sighting_id) AS total_sightings FROM rangers
+-- LEFT JOIN sightings ON rangers.ranger_id = sightings.ranger_id
+-- GROUP BY name ORDER BY name;
+
 SELECT name, count(*) AS total_sightings FROM sightings
 JOIN rangers USING(ranger_id)
 GROUP BY name ORDER BY name;
-
 
 -- problem-5 :  List species that have never been sighted.
 
@@ -97,31 +104,11 @@ WHERE extract(year from discovery_date) < 1800;
 
 -- problem-8 : Label each sighting's time of day as 'Morning', 'Afternoon', or 'Evening'.
 
--- CREATE OR REPLACE FUNCTION time_labeling(sighting_time TIMESTAMP)
--- RETURNS TEXT
--- LANGUAGE plpgsql
--- AS $$
--- DECLARE
---   sighting_hour INT = extract(HOUR FROM sighting_time);
--- BEGIN
---   IF sighting_hour < 12 THEN
---     RETURN 'Morning';
---   ELSIF sighting_hour BETWEEN 12 AND 16 THEN
---     RETURN 'Afternoon';
---   ELSE
---     RETURN 'Evening';
---   END IF;
--- END;
--- $$;
-
-
--- SELECT sighting_id, time_labeling(sighting_time) AS time_of_day FROM sightings
-
 SELECT 
   sighting_id,
   CASE
     WHEN extract(HOUR FROM sighting_time) < 12 THEN 'Morning'
-    WHEN extract(HOUR FROM sighting_time) BETWEEN 12 AND 16 THEN 'Afternoon'
+    WHEN extract(HOUR FROM sighting_time) BETWEEN 12 AND 17 THEN 'Afternoon'
     ELSE 'Evening'
   END AS time_of_day
 FROM sightings ORDER BY sighting_id;
@@ -131,4 +118,9 @@ FROM sightings ORDER BY sighting_id;
 -- problem-9 Delete rangers who have never sighted any species
 
 DELETE FROM rangers
-WHERE ranger_id NOT IN (SELECT ranger_id from sightings)
+WHERE NOT EXISTS (
+  SELECT 1 
+  FROM sightings 
+  WHERE sightings.ranger_id = rangers.ranger_id
+);
+
